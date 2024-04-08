@@ -14,6 +14,7 @@ class ViewModel: ObservableObject {
     @Published var nota = ""
     @Published var fecha = Date()
     @Published var show = false
+    @Published var updateItem : Notas!
     
     //CoreData
     
@@ -40,6 +41,25 @@ class ViewModel: ObservableObject {
         } catch let error as NSError {
             //alerta al usuario
             print("NO Elimino", error.localizedDescription)
+        }
+    }
+    func sendData(item: Notas){
+        updateItem = item
+        nota = item.nota ?? ""
+        fecha = item.fecha ?? Date()
+        show.toggle()
+    }
+    
+    func editData(context: NSManagedObjectContext){
+        updateItem.fecha = fecha
+        updateItem.nota = nota
+        
+        do {
+            try context.save()
+            print("edito")
+            show.toggle()
+        } catch let error as NSError {
+            print("No edito", error.localizedDescription)
         }
     }
 }
