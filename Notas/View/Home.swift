@@ -9,6 +9,7 @@ import SwiftUI
 
 struct Home: View {
     @StateObject var model = ViewModel()
+    @Environment(\.managedObjectContext) var context
     @FetchRequest(entity: Notas.entity(), sortDescriptors: [NSSortDescriptor(key: "fecha", ascending: true)], animation: .spring()) var results : FetchedResults<Notas>
     var body: some View {
         NavigationView{
@@ -19,7 +20,26 @@ struct Home: View {
                             .font(.title)
                             .bold()
                         Text(item.fecha ?? Date(), style: .date)
-                    }
+                    }.contextMenu(ContextMenu(menuItems: {
+                        Button(action:{
+                            print("Editar")
+                        }){
+                            Label(title:{
+                                Text("Editar")
+                            }, icon: {
+                                Image(systemName: "pencil")
+                            })
+                        }
+                        Button(action:{
+                            model.deleteData(item: item, context: context)
+                        }){
+                            Label(title:{
+                                Text("Editar")
+                            }, icon: {
+                                Image(systemName: "trash")
+                            })
+                        }
+                    }))
                 }
             }.navigationBarTitle("Notas")
                 .navigationBarItems(trailing: Button(action:{
